@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  postgres:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+#      - POSTGRES_PASSWORD=123jkl
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  pgadmin:
+    image: "dpage/pgadmin4"
+    ports:
+      - "5430:80"
+      - "5431:443"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=abhishek.bhardwaj@iongroup.com
+      - PGADMIN_DEFAULT_PASSWORD=1234jkl
+      - PGADMIN_LISTEN_ADDRESS=0.0.0.0
+  eureka-server:
+    build:
+      context: ./../prorate-eureka-server
+      dockerfile: eureka-server.Dockerfile
+    ports:
+      - "8761:8761"
+    depends_on:
+      - "postgres"
+
