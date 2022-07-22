@@ -1,4 +1,6 @@
 version: "3.9"
+
+
 services:
   postgres:
     image: "postgres"
@@ -14,7 +16,7 @@ services:
       - "5431:443"
     environment:
       - PGADMIN_DEFAULT_EMAIL=abhishek.bhardwaj@iongroup.com
-      - PGADMIN_DEFAULT_PASSWORD=1234jkl
+      - PGADMIN_DEFAULT_PASSWORD=123jkl
       - PGADMIN_LISTEN_ADDRESS=0.0.0.0
   eureka-server:
     build:
@@ -22,6 +24,14 @@ services:
       dockerfile: eureka-server.Dockerfile
     ports:
       - "8761:8761"
+    depends_on:
+      - "postgres"
+  ms-doctors:
+    build:
+      context: ./../prorate-ms-doctors
+      dockerfile: ms-doctors.Dockerfile
+    ports:
+      - "8081:8081"
     depends_on:
       - "postgres"
 
