@@ -34,4 +34,14 @@ services:
       - "8081:8081"
     depends_on:
       - "postgres"
+      - "eureka-server"
+  ms-reviews:
+    build:
+      context: ./../prorate-ms-reviews
+      dockerfile: ms-reviews.Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - "postgres"
+      - "eureka-server"
 
