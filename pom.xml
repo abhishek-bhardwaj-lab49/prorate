@@ -19,6 +19,7 @@
         <module>prorate-eureka-server</module>
         <module>prorate-ms-doctors</module>
         <module>prorate-ms-reviews</module>
+        <module>prorate-config-server</module>
     </modules>
 
     <properties>

@@ -26,6 +26,16 @@ services:
       - "8761:8761"
     depends_on:
       - "postgres"
+  config-server:
+    build:
+      context: ./../prorate-config-server
+      dockerfile: config-server.Dockerfile
+    ports:
+      - "8888:8888"
+    depends_on:
+      - "eureka-server"
+
+
   ms-doctors:
     build:
       context: ./../prorate-ms-doctors
@@ -35,6 +45,7 @@ services:
     depends_on:
       - "postgres"
       - "eureka-server"
+      - "config-server"
   ms-reviews:
     build:
       context: ./../prorate-ms-reviews
@@ -44,4 +55,5 @@ services:
     depends_on:
       - "postgres"
       - "eureka-server"
+      - "config-server"
 

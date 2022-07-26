@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="prorate-config-server" />
         <module name="prorate-eureka-server" />
       </profile>
       <profile name="Annotation profile for prorate" enabled="true">
@@ -19,6 +20,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.1.Final/mapstruct-processor-1.5.1.Final.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.1.Final/mapstruct-1.5.1.Final.jar" />
         </processorPath>
+        <module name="prorate-ms-doctors" />
         <module name="prorate-ms-reviews" />
       </profile>
     </annotationProcessing>
@@ -28,6 +30,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="prorate-config-server" options="-parameters" />
       <module name="prorate-eureka-server" options="-parameters" />
       <module name="prorate-ms-doctors" options="-parameters" />
       <module name="prorate-ms-reviews" options="-parameters" />
