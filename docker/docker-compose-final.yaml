@@ -19,25 +19,19 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=123jkl
       - PGADMIN_LISTEN_ADDRESS=0.0.0.0
   eureka-server:
-    build:
-      context:  ./../prorate-eureka-server
-      dockerfile: eureka-server.Dockerfile
+    image: abhisheklab49/prorate-eureka-server:latest
     ports:
       - "8761:8761"
     depends_on:
       - "postgres"
   config-server:
-    build:
-      context: ./../prorate-config-server
-      dockerfile: config-server.Dockerfile
+    image: abhisheklab49/prorate-config-server:latest
     ports:
       - "8888:8888"
     depends_on:
       - "eureka-server"
   ms-doctors:
-    build:
-      context: ./../prorate-ms-doctors
-      dockerfile: ms-doctors.Dockerfile
+    image: abhisheklab49/prorate-ms-doctors:latest
     ports:
       - "8081:8081"
     depends_on:
@@ -45,9 +39,7 @@ services:
       - "eureka-server"
       - "config-server"
   ms-reviews:
-    build:
-      context: ./../prorate-ms-reviews
-      dockerfile: ms-reviews.Dockerfile
+    image: abhisheklab49/prorate-ms-reviews:latest
     ports:
       - "8082:8082"
     depends_on:
