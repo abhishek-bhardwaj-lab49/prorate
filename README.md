@@ -1,28 +1,56 @@
-# My Project
+# Prorate - Microservices Architecture
 
-## Overview
-This is a sample project demonstrating README.md structure.
+## Project Structure
 
-## Installation
+```
+├── docker
+│   ├── docker-compose.yaml
+│   └── individual service Dockerfiles
+├── prorate-config-server
+├── prorate-eureka-server
+├── prorate-ms-doctors
+└── prorate-ms-reviews
+```
+
+## Technology Stack
+- Java 17
+- Spring Boot
+- Spring Cloud
+- Spring Data JPA
+- PostgreSQL
+- Docker
+- Maven
+
+## Getting Started
 ```bash
-cargo build --release
+cp docker/docker-compose.yaml docker-compose.override.yaml
+
+docker-compose up --build
 ```
 
-## Usage
-```rust
-fn main() {
-    println!("Hello, world!");
-}
-```
+## Services
+### Doctors Service
+Manages doctor data including:
+- Doctor information
+- Availability
+- Specializations
 
-## Features
-- Feature one
-- Feature two
-- Feature three
+### Reviews Service
+Handles patient reviews:
+- Review creation
+- Rating aggregation
+- Doctor reputation
 
-## Roadmap
-- [ ] Implement feature A
-- [ ] Add tests
+### Config Server
+Central configuration management
+
+### Eureka Server
+Service discovery component
+
+## API Documentation
+Access Swagger UI at: http://localhost:8080/swagger-ui/
 
 ## License
 MIT License
+
+This is a starting README - I'll continue populating details.
