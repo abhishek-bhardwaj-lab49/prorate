@@ -63,10 +63,11 @@ prorate/
 │  │  │  │  ┌─────────────┐  │  │  ┌────────────────────────┐  │    │   │   │
 │  │  │  │  │  Doctors    │  │  │  │  Reviews               │  │    │   │   │
 │  │  │  │  │  Service    │  │  │  │  Service               │  │    │   │   │
-│  │  │  │  └─────────────┘  │  │  └────────────────────────┘  │    │   │   │
-│  │  │  └─────────────────┘  │  └────────────────────────────┘    │   │   │
-│  │  └──────────────────────────────────────────────────────────────┘   │   │
-│  └─────────────────────────────────────────────────────────────────────┘   │
+│  │  │  │  │  └─────────────┘  │  │  │  └────────────────────────┘  │    │   │   │
+│  │  │  │  └─────────────────┘  │  │  └────────────────────────────┘    │   │   │
+│  │  │  └──────────────────────────────────────────────────────────────┘   │   │
+│  │  └─────────────────────────────────────────────────────────────────────┘   │
+│  └──────────────────────────────────────────────────────────────────────────────┘
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                    Prorate Eureka Server                            │   │
@@ -99,151 +100,108 @@ prorate/
 | Node.js | 18+ |
 | npm | 9.0.0+ |
 
-### Installation
+### Installation Steps
 
-```sh
-# Clone the repository
+1. Clone the repository
+```bash
 git clone https://github.com/abhishek-bhardwaj-lab49/prorate.git
 cd prorate
+```
 
-# Build the project
+2. Build the project
+```bash
 mvn clean install
-
-cd frontend
-npm install
-npm run build
 ```
 
-### Configuration
-
-Create or modify the environment configuration file:
-
-```sh
-cp .env.example .env
-nano .env
-```
-
-### Running the Project
-
-#### Option 1: Using Docker (Recommended)
-
-```sh
+3. Start Docker containers
+```bash
 docker-compose up --build
 ```
 
-#### Option 2: Manual Setup
+## Running Services
 
-```sh
-cd prorate-eureka-server
-mvn spring-boot:run &
+### Manual Startup Sequence
+```bash
+# Start Config Server
+cd prorate-config-server
+mvn spring-boot:run
 
-cd ../prorate-config-server
-mvn spring-boot:run &
+# Start Eureka Server
+cd ../prorate-eureka-server
+mvn spring-boot:run
 
+# Start Doctors Microservice
 cd ../prorate-ms-doctors
-mvn spring-boot:run &
+mvn spring-boot:run
 
+# Start Reviews Microservice
 cd ../prorate-ms-reviews
-mvn spring-boot:run &
+mvn spring-boot:run
 ```
 
-### Accessing the Applications
+## Configuration Management
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| Eureka Server | [http://localhost:9000](http://localhost:9000) | Service Registry |
-| Config Server | [http://localhost:8888](http://localhost:8888) | Configuration Management |
-| Doctors Service | [http://localhost:8081](http://localhost:8081) | Doctor Management |
-| Reviews Service | [http://localhost:8082](http://localhost:8082) | Review Management |
-
-## Key API Endpoints
-
-### Doctors Service (Port 8081)
-
-```
-GET  /api/doctors          - List all doctors
-GET  /api/doctors/{id}     - Get doctor by ID
-POST  /api/doctors         - Create new doctor
-PUT  /api/doctors/{id}     - Update doctor
-DELETE /api/doctors/{id}   - Delete doctor
+### Config Server Setup
+```yaml
+# config-server/src/main/resources/bootstrap.yml
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/abhishek-bhardwaj-lab49/prorate-config
+          search-paths: classpath:/config
 ```
 
-### Reviews Service (Port 8082)
+### Configuration Properties
+```yaml
+# Example configuration
+Doctors:
+  base-fee: 200
+  premium-multiplier: 2.5
+  discount-threshold: 5
 
-```
-GET  /api/reviews          - List all reviews
-GET  /api/reviews/{id}     - Get review by ID
-POST  /api/reviews         - Create new review
-PUT  /api/reviews/{id}     - Update review
-DELETE /api/reviews/{id}   - Delete review
-```
+Reviews:
+  min-rating-for-discount: 4
+  discount-percentage: 10
 
-## Testing the Architecture
-
-```sh
-# Run all tests
-npm test
-
-# Run specific test suite
-cd prorate-ms-doctors
-mvn test -Dtest=DoctorServiceTests
-
-# Check test coverage
-npm run coverage
+Eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 ```
 
-## Project Documentation
+## Deployment
 
-| Document | Location |
-|----------|----------|
-| API Docs | [http://localhost:8081/swagger-ui.html](http://localhost:8081/swagger-ui.html) |
-| Architecture Diagram | [docs/architecture.md](docs/architecture.md) |
-| Deployment Guide | [docs/deployment.md](docs/deployment.md) |
-| Security Guide | [docs/security.md](docs/security.md) |
+### Docker Deployment
+```bash
+# Build individual services
+docker build -t prorate-config-server -f Dockerfile -t prorate/config-server ./prorate-config-server
+
+docker build -t prorate-eureka-server -f Dockerfile -t prorate/eureka-server ./prorate-eureka-server
+
+docker build -t prorate-doctors -f Dockerfile -t prorate/doctors ./prorate-ms-doctors
+
+docker build -t prorate-reviews -f Dockerfile -t prorate/reviews ./prorate-ms-reviews
+```
+
+### Kubernetes Deployment
+```bash
+kubectl apply -f kubernetes/deployment.yaml
+kubectl apply -f kubernetes/service.yaml
+kubectl apply -f kubernetes/configmap.yaml
+```
 
 ## Contribution Guidelines
 
-### Branching Convention
-
-```
-feature/short-description
-fix/issue-slug
-hotfix/critical-issue
-```
-
-### Commit Message Format
-
-```
-type(scope): short description
-
-body
-
-footer
-```
-
-### Pull Request Process
-1. Create a branch from `main`
-2. Commit with meaningful messages
-3. Push changes to your branch
-4. Create a PR with clear description
-5. Wait for review and testing
-6. Address feedback
-7. Merge once approved
-
-### Code Quality Standards
-
-| Metric | Threshold |
-|--------|-----------|
-| Code Coverage | ≥80% |
-| Code Climate Score | B+ or higher |
-| Checkstyle Errors | 0 |
-| Security Vulnerabilities | 0 |
+Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines, including:
+- Code style and formatting
+- Testing requirements
+- Pull request process
+- Code review guidelines
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-**Documentation Status**: alpha
-**Release Status**: development
+This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
