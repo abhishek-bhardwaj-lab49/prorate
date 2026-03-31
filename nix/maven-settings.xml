@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  nix/maven-settings.xml
+  ~~~~~~~~~~~~~~~~~~~~~~
+  Maven settings file used exclusively inside the Nix dev shell.
+
+  Key behaviours
+  ──────────────
+  • localRepository  – reads the MAVEN_REPO env-var set by the flake shellHook
+    so the project-local .m2/repository/ is used instead of ~/.m2/repository.
+    This keeps builds reproducible and avoids polluting the host cache.
+
+  • mirrors / proxies – none configured by default; add entries here if your
+    organisation requires an internal Artifactory / Nexus mirror.
+
+  • servers – add <server> entries here for repositories that require
+    authentication (e.g. GitHub Packages).
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0
+                              https://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+  <!--
+    Use the project-local Maven repository.
+    The MAVEN_REPO variable is exported by the flake shellHook:
+      MAVEN_REPO = <project-root>/.m2/repository
+  -->
+  <localRepository>${env.MAVEN_REPO}</localRepository>
+
+  <interactiveMode>true</interactiveMode>
+  <offline>false</offline>
+
+  <!-- ── Mirrors ─────────────────────────────────────────────────────────── -->
+  <!--
+    Uncomment and adjust to route all artifact downloads through an internal
+    mirror (e.g. Artifactory, Nexus):
+
+  <mirrors>
+    <mirror>
+      <id>internal-mirror</id>
+      <mirrorOf>*</mirrorOf>
+      <url>https://artifactory.example.com/artifactory/maven-public</url>
+    </mirror>
+  </mirrors>
+  -->
+
+  <!-- ── Profiles ─────────────────────────────────────────────────────────── -->
+  <profiles>
+    <profile>
+      <id>nix-dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <!-- Suppress the Maven transfer progress bar in CI-like environments -->
+        <maven.wagon.http.pool>false</maven.wagon.http.pool>
+      </properties>
+    </profile>
+  </profiles>
+
+</settings>
